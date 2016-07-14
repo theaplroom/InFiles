@@ -4,21 +4,21 @@
     ⍝ -- operators --
       Each←{                            ⍝ iterate ⍺⍺ on files in ⍵
           ⍺←⊣
-          ⍺∘⍺⍺¨filesIn ⍵
+          ⍺∘⍺⍺¨⊃∘⎕NGET¨filesIn ⍵
       }
 
       Convert←{
         ⍝ ⍺⍺ is a monadic or dyadic fn for which ⍵ and result are filestrings
         ⍝ ⍵⍵ is extension of target file; if same as source file, overwrites
         ⍝ Result is a flag for each file indicating success
-        ⍝ eg 1 0 1 ←→ (Utf8ToAnsii Convert 'htm') '.\*.html'
+        ⍝ eg 1 0 1 ←→ (Utf8ToAnsii Convert 'htm') './*.html'
           ⍺←⊣
-          srcs←⊃filesIn ⍵
+          srcs←filesIn ⍵
           rw←{
               tgt←(⊃,/2↑⎕NPARTS ⍵),'.',⍵⍵
               (txt enc lb)←⎕NGET ⍵
               new←⍺⍺ txt
-              (≢new)=(new enc lb)⎕NPUT tgt
+              ×(new enc lb)⎕NPUT tgt
           }
           (⍺∘⍺⍺ rw ⍵⍵)¨srcs
       }
@@ -27,7 +27,7 @@
          ⍝ ⍺⍺ is a monadic or dyadic fn for which ⍵ is a filestring and
          ⍝ result is a Boolean scalar
          ⍝ Result of the modified fn is a list of files for which ⍺⍺ returns 1
-         ⍝ eg IsAnsii Select '.\*.html'
+         ⍝ eg IsAnsii Select './*.html'
           ⍺←⊣
           srcs←filesIn ⍵
           srcs/⍨⍺∘⍺⍺¨⊃¨⎕NGET¨srcs
@@ -40,12 +40,12 @@
 
     IsNonAnsii←{127∨.<⎕UCS∪⍵}
 
-    NonAnsii←{⍵/⍨127<⎕UCS∪⍵}
+    NonAnsii←{⍵/⍨127<⎕UCS ⍵}
 
-      Utf8ToAnsii←{                     ⍝ convert all non-ANSII chars to HTML character entities
-          utf8←NonAnsii ⍵               ⍝ unique code points above 127
-          old←,¨⎕UCS utf8               ⍝ characters
-          new←{'\&#',(⍕⍵),';'}¨utf8     ⍝ character entities
+      Utf8ToAnsii←{                         ⍝ convert all non-ANSII chars to HTML character entities
+          utf8←NonAnsii ⍵                   ⍝ unique code points above 127
+          old←,¨utf8                        ⍝ characters
+          new←{'\&#',(⍕⍵),';'}¨⎕UCS utf8    ⍝ character entities
           (old ⎕R new)⍵
       }
 

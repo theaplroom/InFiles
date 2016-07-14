@@ -1,0 +1,6 @@
+Load ..\APLTree\APLTreeUtils
+Load ..\APLTree\WinFile
+Load ..\APLTree\Tester
+Load Infiles
+Load Tests
+Run #.Tester.EstablishHelpersIn #.Tests
