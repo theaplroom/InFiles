@@ -1,0 +1,10 @@
+Load ..\APLTree\APLTreeUtils
+Load ..\APLTree\WinFile
+Load ..\APLTree\Tester
+Load ..\Dfns
+Load Infiles
+Load Tests
+Load Utf8ToAnsii
+Target #
+Load ..\Devt
+Run #.Tester.EstablishHelpersIn #.Tests ⋄ #.Tests.Run

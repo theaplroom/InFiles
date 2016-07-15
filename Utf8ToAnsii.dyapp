@@ -1,0 +1,4 @@
+Load ..\Dfns
+Load InFiles
+Load Utf8ToAnsii
+Run ⎕←#.Utf8ToAnsii.Greeting

@@ -1,11 +1,18 @@
 ﻿:Namespace Tests
 ⍝ Tests for InFiles Namespace
-⍝ Vern: sjt14jul16
+⍝ Vern: sjt15jul16
 
     I←#.InFiles ⍝ alias
 
     same←{∧/⍵∊⊂⊃⍵}∘,
     LB←⎕UCS 10 ⍝ line break
+    ∇ cont nput file
+    ⍝ (over)write cont to file
+      :If ⎕NEXISTS file
+          ⎕NDELETE file
+      :EndIf
+      cont ⎕NPUT file
+    ∇
 
     TEST_FLDR←'./test_files/'
 
@@ -17,15 +24,11 @@
 
     ∇ Initial;file
     ⍝ Initialise state
-      :If ⎕NEXISTS TEST_FLDR
-          :For file :In ⊃0(⎕NINFO⍠'Wildcard' 1)TEST_FLDR,'*.*'
-              ⎕NDELETE file
-          :EndFor
-      :Else
+      :If ~⎕NEXISTS TEST_FLDR
           ⎕MKDIR TEST_FLDR
       :EndIf
-      ANSII ⎕NPUT TEST_FLDR,'ansii.txt'
-      UTF8 ⎕NPUT TEST_FLDR,'utf8.txt'
+      ANSII nput TEST_FLDR,'ansii.txt'
+      UTF8 nput TEST_FLDR,'utf8.txt'
     ∇
 
     ∇ Cleanup
@@ -117,6 +120,28 @@
       :If Z←1 1≢I.(Utf8ToAnsii Convert'dat')TEST_FLDR,'*.txt'
       :OrIf Z←0∊I.(IsAnsii Each)TEST_FLDR,'*.dat'
       :OrIf Z←(ANSII CHAR,¨LB)≢I.(⊣Each)TEST_FLDR,'*.dat'
+      :EndIf
+    ∇
+
+    ∇ Z←Test_Files_005(debugFlag batchFlag);ext
+     ⍝ Convert files to ANSII character set and overwrite (specified)
+      ext←'xxx' ⍝ source extension
+      ANSII nput TEST_FLDR,'ansii.',ext
+      UTF8 nput TEST_FLDR,'utf8.',ext
+      :If Z←1 1≢(I.Utf8ToAnsii I.Convert ext)TEST_FLDR,'*.',ext
+      :OrIf Z←0∊I.(IsAnsii Each)TEST_FLDR,'*.',ext
+      :OrIf Z←(ANSII CHAR,¨LB)≢I.(⊣Each)TEST_FLDR,'*.',ext
+      :EndIf
+    ∇
+
+    ∇ Z←Test_Files_006(debugFlag batchFlag);ext
+     ⍝ Convert files to ANSII character set and overwrite (explicit)
+      ext←'yyy' ⍝ source extension
+      ANSII nput TEST_FLDR,'ansii.',ext
+      UTF8 nput TEST_FLDR,'utf8.',ext
+      :If Z←1 1≢I.(Utf8ToAnsii Convert'')TEST_FLDR,'*.',ext
+      :OrIf Z←0∊I.(IsAnsii Each)TEST_FLDR,'*.',ext
+      :OrIf Z←(ANSII CHAR,¨LB)≢I.(⊣Each)TEST_FLDR,'*.',ext
       :EndIf
     ∇
 
